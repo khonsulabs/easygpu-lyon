@@ -54,28 +54,29 @@ pub trait Sandbox: Sized + 'static {
                 _ => {}
             },
             Event::RedrawRequested(_) => {
-                let output = textures.next_texture();
-                let mut frame = renderer.frame();
+                if let Ok(output) = textures.next_texture() {
+                    let mut frame = renderer.frame();
 
-                renderer.update_pipeline(
-                    sandbox.pipeline(),
-                    ScreenTransformation::ortho(
-                        0.,
-                        output.size.width as f32,
-                        output.size.height as f32,
-                        0.,
-                        -1.,
-                        1.,
-                    ),
-                    &mut frame,
-                );
+                    renderer.update_pipeline(
+                        sandbox.pipeline(),
+                        ScreenTransformation::ortho(
+                            0.,
+                            output.size.width as f32,
+                            output.size.height as f32,
+                            0.,
+                            -1.,
+                            1.,
+                        ),
+                        &mut frame,
+                    );
 
-                {
-                    let mut pass = frame.pass(PassOp::Clear(Rgba::TRANSPARENT), &output);
+                    {
+                        let mut pass = frame.pass(PassOp::Clear(Rgba::TRANSPARENT), &output);
 
-                    sandbox.render(&mut pass);
+                        sandbox.render(&mut pass);
+                    }
+                    renderer.present(frame);
                 }
-                renderer.present(frame);
             }
             _ => {
                 *control_flow = ControlFlow::Wait;
