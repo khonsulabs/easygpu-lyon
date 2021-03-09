@@ -1,3 +1,4 @@
+use bytemuck::{Pod, Zeroable};
 use easygpu::prelude::*;
 use std::ops::Deref;
 
@@ -7,13 +8,13 @@ pub struct LyonPipeline {
 }
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Pod, Zeroable)]
 /// The uniforms for the shader.
 pub struct Uniforms {
     /// The orthographic projection matrix
-    pub ortho: ScreenTransformation<f32>,
+    pub ortho: [f32; 16],
     /// The transformation matrix
-    pub transform: ScreenTransformation<f32>,
+    pub transform: [f32; 16],
 }
 
 impl<'a> AbstractPipeline<'a> for LyonPipeline {
@@ -33,8 +34,8 @@ impl<'a> AbstractPipeline<'a> for LyonPipeline {
     }
 
     fn setup(pipeline: Pipeline, dev: &Device) -> Self {
-        let transform = ScreenTransformation::identity();
-        let ortho = ScreenTransformation::identity();
+        let transform = ScreenTransformation::identity().to_array();
+        let ortho = ScreenTransformation::identity().to_array();
         let uniforms = dev.create_uniform_buffer(&[self::Uniforms { ortho, transform }]);
         let bindings = dev.create_binding_group(&pipeline.layout.sets[0], &[&uniforms]);
 
@@ -51,7 +52,8 @@ impl<'a> AbstractPipeline<'a> for LyonPipeline {
         &'a self,
         ortho: Self::PrepareContext,
     ) -> Option<(&'a UniformBuffer, Vec<Self::Uniforms>)> {
-        let transform = ScreenTransformation::identity();
+        let ortho = ortho.to_array();
+        let transform = ScreenTransformation::identity().to_array();
         Some((
             &self.pipeline.uniforms,
             vec![self::Uniforms { transform, ortho }],

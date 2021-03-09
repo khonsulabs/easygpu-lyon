@@ -1,16 +1,15 @@
+use bytemuck::{Pod, Zeroable};
 use std::sync::Arc;
 
 use easygpu::{
     buffers::{IndexBuffer, VertexBuffer},
     color::Rgba8,
-    euclid::Vector3D,
-    transform::ScreenSpace,
 };
 
 #[repr(C)]
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Pod, Zeroable)]
 pub(crate) struct Vertex {
-    pub position: Vector3D<f32, ScreenSpace>,
+    pub position: [f32; 3],
     pub color: Rgba8,
 }
 

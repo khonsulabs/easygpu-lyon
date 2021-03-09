@@ -66,7 +66,6 @@ pub trait Sandbox: Sized + 'static {
                             -1.,
                             1.,
                         ),
-                        &mut frame,
                     );
 
                     {

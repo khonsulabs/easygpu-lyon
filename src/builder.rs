@@ -83,7 +83,7 @@ impl ShapeBuilder {
                 a: attributes[3],
             }
             .into(),
-            position: Vector3D::<f32, ScreenSpace>::new(point.x, point.y, self.zdepth),
+            position: Vector3D::<f32, ScreenSpace>::new(point.x, point.y, self.zdepth).to_array(),
         }
     }
 
