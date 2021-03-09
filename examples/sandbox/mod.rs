@@ -18,7 +18,8 @@ pub trait Sandbox: Sized + 'static {
 
         // Setup renderer
         let instance = easygpu::wgpu::Instance::new(easygpu::wgpu::BackendBit::PRIMARY);
-        let mut renderer = futures::executor::block_on(Renderer::new(&instance, &window))?;
+        let surface = unsafe { instance.create_surface(&window) };
+        let mut renderer = futures::executor::block_on(Renderer::new(surface, &instance))?;
         let sandbox = Self::create(&renderer);
 
         let mut textures = renderer.swap_chain(
@@ -41,15 +42,13 @@ pub trait Sandbox: Sized + 'static {
                 WindowEvent::KeyboardInput {
                     input:
                         KeyboardInput {
-                            virtual_keycode: Some(code),
+                            virtual_keycode: Some(VirtualKeyCode::Escape),
                             state: ElementState::Pressed,
                             ..
                         },
                     ..
                 } => {
-                    if let VirtualKeyCode::Escape = code {
-                        *control_flow = ControlFlow::Exit;
-                    }
+                    *control_flow = ControlFlow::Exit;
                 }
                 _ => {}
             },
