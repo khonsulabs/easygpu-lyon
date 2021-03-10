@@ -1,5 +1,5 @@
 use easygpu::{euclid::Size2D, prelude::*};
-use easygpu_lyon::LyonPipeline;
+use easygpu_lyon::{LyonPipeline, Srgb};
 use winit::{
     event::{ElementState, Event, KeyboardInput, VirtualKeyCode, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
@@ -8,7 +8,7 @@ use winit::{
 
 pub trait Sandbox: Sized + 'static {
     fn create(renderer: &Renderer) -> Self;
-    fn pipeline(&self) -> &'_ LyonPipeline;
+    fn pipeline(&self) -> &'_ LyonPipeline<Srgb>;
     fn render<'a, 'b>(&'a self, pass: &'b mut easygpu::wgpu::RenderPass<'a>);
 
     fn run() -> Result<(), easygpu::error::Error> {

@@ -1,18 +1,17 @@
 [tasks.compile-fragment-shader]
 script_runner = "@shell"
-script = [
-    '''
+script = ['''
 glslc src/shaders/shape.frag -o src/shaders/shape.frag.spv
-'''
-]
+''']
 
 
 [tasks.compile-vertex-shader]
 script_runner = "@shell"
 script = [
-'''
+    '''
 glslc src/shaders/shape.vert -o src/shaders/shape.vert.spv
-'''
+glslc src/shaders/shape-srgb.vert -o src/shaders/shape-srgb.vert.spv
+''',
 ]
 
 [tasks.pre-build]
@@ -28,8 +27,6 @@ args = ["clean"]
 
 [tasks.shaders-clean]
 script_runner = "@shell"
-script = [
-'''
+script = ['''
 rm src/shaders/*.spv
-'''
-]
+''']

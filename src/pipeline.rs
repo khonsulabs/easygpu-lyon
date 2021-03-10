@@ -1,10 +1,11 @@
 use bytemuck::{Pod, Zeroable};
-use easygpu::prelude::*;
-use std::ops::Deref;
+use easygpu::{prelude::*, wgpu::TextureFormat};
+use std::{marker::PhantomData, ops::Deref};
 
 /// A pipeline for rendering shapes.
-pub struct LyonPipeline {
+pub struct LyonPipeline<T> {
     pipeline: PipelineCore,
+    _phantom: PhantomData<T>,
 }
 
 #[repr(C)]
@@ -17,7 +18,39 @@ pub struct Uniforms {
     pub transform: [f32; 16],
 }
 
-impl<'a> AbstractPipeline<'a> for LyonPipeline {
+pub trait VertexShaderSource {
+    fn shader() -> &'static [u8];
+
+    fn texture_format() -> TextureFormat;
+}
+
+pub struct Srgb;
+pub struct Normal;
+
+impl VertexShaderSource for Srgb {
+    fn shader() -> &'static [u8] {
+        include_bytes!("shaders/shape-srgb.vert.spv")
+    }
+
+    fn texture_format() -> TextureFormat {
+        TextureFormat::Bgra8UnormSrgb
+    }
+}
+
+impl VertexShaderSource for Normal {
+    fn shader() -> &'static [u8] {
+        include_bytes!("shaders/shape.vert.spv")
+    }
+
+    fn texture_format() -> TextureFormat {
+        TextureFormat::Bgra8Unorm
+    }
+}
+
+impl<'a, T> AbstractPipeline<'a> for LyonPipeline<T>
+where
+    T: VertexShaderSource,
+{
     type PrepareContext = ScreenTransformation<f32>;
     type Uniforms = Uniforms;
 
@@ -28,7 +61,7 @@ impl<'a> AbstractPipeline<'a> for LyonPipeline {
                 binding: BindingType::UniformBuffer,
                 stage: ShaderStage::VERTEX,
             }])],
-            vertex_shader: include_bytes!("shaders/shape.vert.spv"),
+            vertex_shader: T::shader(),
             fragment_shader: include_bytes!("shaders/shape.frag.spv"),
         }
     }
@@ -45,6 +78,7 @@ impl<'a> AbstractPipeline<'a> for LyonPipeline {
                 uniforms,
                 bindings,
             },
+            _phantom: PhantomData::default(),
         }
     }
 
@@ -61,7 +95,7 @@ impl<'a> AbstractPipeline<'a> for LyonPipeline {
     }
 }
 
-impl Deref for LyonPipeline {
+impl<T> Deref for LyonPipeline<T> {
     type Target = PipelineCore;
     fn deref(&self) -> &Self::Target {
         &self.pipeline

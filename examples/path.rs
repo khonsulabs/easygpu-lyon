@@ -1,5 +1,5 @@
 use easygpu::prelude::*;
-use easygpu_lyon::{LyonPipeline, Shape, ShapeBuilder};
+use easygpu_lyon::{LyonPipeline, Shape, ShapeBuilder, Srgb};
 use lyon_tessellation::{math::point, path::Path, FillOptions, StrokeOptions};
 
 mod sandbox;
@@ -10,7 +10,7 @@ fn main() -> Result<(), easygpu::error::Error> {
 }
 
 struct PathExample {
-    pipeline: LyonPipeline,
+    pipeline: LyonPipeline<Srgb>,
     shape: Shape,
 }
 
@@ -48,7 +48,7 @@ impl Sandbox for PathExample {
         Self { pipeline, shape }
     }
 
-    fn pipeline(&self) -> &'_ LyonPipeline {
+    fn pipeline(&self) -> &'_ LyonPipeline<Srgb> {
         &self.pipeline
     }
 
