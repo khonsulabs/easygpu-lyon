@@ -1,5 +1,5 @@
 use easygpu::{euclid::Size2D, prelude::*};
-use easygpu_lyon::{LyonPipeline, Srgb};
+use easygpu_lyon::{LyonPipeline, Srgb, VertexShaderSource};
 use winit::{
     event::{ElementState, Event, KeyboardInput, VirtualKeyCode, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
@@ -25,6 +25,7 @@ pub trait Sandbox: Sized + 'static {
         let mut textures = renderer.swap_chain(
             Size2D::new(size.width, size.height).cast::<u32>(),
             PresentMode::default(),
+            Srgb::sampler_format(),
         );
 
         event_loop.run(move |event, _, control_flow| match event {
@@ -36,6 +37,7 @@ pub trait Sandbox: Sized + 'static {
                     textures = renderer.swap_chain(
                         Size2D::new(size.width, size.height).cast::<u32>(),
                         PresentMode::default(),
+                        Srgb::sampler_format(),
                     );
                     *control_flow = ControlFlow::Wait;
                 }

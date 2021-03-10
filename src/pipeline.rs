@@ -21,7 +21,7 @@ pub struct Uniforms {
 pub trait VertexShaderSource {
     fn shader() -> &'static [u8];
 
-    fn texture_format() -> TextureFormat;
+    fn sampler_format() -> TextureFormat;
 }
 
 pub struct Srgb;
@@ -32,7 +32,7 @@ impl VertexShaderSource for Srgb {
         include_bytes!("shaders/shape-srgb.vert.spv")
     }
 
-    fn texture_format() -> TextureFormat {
+    fn sampler_format() -> TextureFormat {
         TextureFormat::Bgra8UnormSrgb
     }
 }
@@ -42,7 +42,7 @@ impl VertexShaderSource for Normal {
         include_bytes!("shaders/shape.vert.spv")
     }
 
-    fn texture_format() -> TextureFormat {
+    fn sampler_format() -> TextureFormat {
         TextureFormat::Bgra8Unorm
     }
 }

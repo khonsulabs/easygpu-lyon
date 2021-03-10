@@ -1,5 +1,5 @@
 use easygpu::prelude::*;
-use easygpu_lyon::{LyonPipeline, Shape, ShapeBuilder, Srgb};
+use easygpu_lyon::{LyonPipeline, Shape, ShapeBuilder, Srgb, VertexShaderSource};
 use lyon_tessellation::{math::point, path::Path, FillOptions, StrokeOptions};
 
 mod sandbox;
@@ -16,7 +16,7 @@ struct PathExample {
 
 impl Sandbox for PathExample {
     fn create(renderer: &Renderer) -> Self {
-        let pipeline = renderer.pipeline(Blending::default());
+        let pipeline = renderer.pipeline(Blending::default(), Srgb::sampler_format());
 
         let mut builder = ShapeBuilder::default();
 

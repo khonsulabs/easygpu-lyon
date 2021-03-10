@@ -1,5 +1,5 @@
 use easygpu::prelude::*;
-use easygpu_lyon::{LyonPipeline, Shape, ShapeBuilder, Srgb};
+use easygpu_lyon::{LyonPipeline, Shape, ShapeBuilder, Srgb, VertexShaderSource};
 use lyon_tessellation::{basic_shapes::fill_circle, math::Point, FillOptions};
 
 mod sandbox;
@@ -16,7 +16,7 @@ struct CircleExample {
 
 impl Sandbox for CircleExample {
     fn create(renderer: &Renderer) -> Self {
-        let pipeline = renderer.pipeline(Blending::default());
+        let pipeline = renderer.pipeline(Blending::default(), Srgb::sampler_format());
 
         let mut builder = ShapeBuilder::default();
         builder.default_color = [1., 0., 0., 1.];
