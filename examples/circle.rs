@@ -28,7 +28,7 @@ impl Sandbox for CircleExample {
             &mut builder,
         )
         .expect("Error tesselating circle");
-        let shape = builder.prepare(&renderer);
+        let shape = builder.prepare(renderer);
 
         Self { pipeline, shape }
     }

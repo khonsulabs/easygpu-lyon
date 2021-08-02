@@ -19,7 +19,7 @@ pub trait Sandbox: Sized + 'static {
         // Setup renderer
         let instance = easygpu::wgpu::Instance::new(easygpu::wgpu::BackendBit::PRIMARY);
         let surface = unsafe { instance.create_surface(&window) };
-        let mut renderer = futures::executor::block_on(Renderer::new(surface, &instance))?;
+        let mut renderer = futures::executor::block_on(Renderer::for_surface(surface, &instance))?;
         let sandbox = Self::create(&renderer);
 
         let mut textures = renderer.swap_chain(

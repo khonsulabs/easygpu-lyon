@@ -43,7 +43,7 @@ impl Sandbox for PathExample {
             .stroke(&path, &StrokeOptions::default())
             .expect("Error tesselating path");
 
-        let shape = builder.prepare(&renderer);
+        let shape = builder.prepare(renderer);
 
         Self { pipeline, shape }
     }
